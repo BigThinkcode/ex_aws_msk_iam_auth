@@ -25,7 +25,7 @@ Ref: https://hexdocs.pm/broadway_kafka/BroadwayKafka.Producer.html#module-client
             sasl:
               {
                 :callback, 
-                AwsMskIam, 
+                ExAwsMskIamAuth, 
                 {:AWS_MSK_IAM, "AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"}
               },
             ssl: true
