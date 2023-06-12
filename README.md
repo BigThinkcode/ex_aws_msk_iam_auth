@@ -41,6 +41,9 @@ Broadway Kafka is an amalgamation of awesome features from Broadway with Kafka a
 ### AWS MSK Authentication Mechanisms
 MSK supports two variants - MSK Fully Managed and MSK Serverless. In both the variants, Kafka service can be protected via SASL, in particular, AWS's custom SASL mechanism AWS_MSK_IAM(https://docs.aws.amazon.com/msk/latest/developerguide/iam-access-control.html). At the time of writing this library, MSK's Serverless variant's only supported authentication was AWS_MSK_IAM SASL mechanism.
 
+### Solution Diagram
+![Solution Diagram](solution.png)
+
 ### Implementation
 This library takes inspiration from its Java counterpart [aws-msk-iam-auth](https://github.com/aws/aws-msk-iam-auth)
 
