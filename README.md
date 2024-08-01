@@ -17,7 +17,21 @@ end
 ## Usage
 
 Broadway Kafka supports connecting to Kafka broker via SASL authentication. The following sample configuration shows how `ex_aws_msk_iam_auth` plugin can be used with it.
- 
+
+A configuration of region is required if you have an intention to
+use this library in regions other than "us-east-1" (the default region).
+
+```elixir
+# config.exs
+config :ex_aws_msk_iam_auth
+  region: "us-east-2"
+
+# or in runtime.exs
+
+config :ex_aws_msk_iam_auth
+  region: System.get_env("AWS_REGION")
+```
+
 Ref: https://hexdocs.pm/broadway_kafka/BroadwayKafka.Producer.html#module-client-config-options
 
 ```elixir

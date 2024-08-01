@@ -8,14 +8,8 @@ defmodule SignedPayloadGenerator do
 
   @callback get_msk_signed_payload(binary(), DateTime.t(), binary(), binary()) :: binary()
 
-  # TODO: Make service, region, user_agent, version and ttl runtime configurable
-  @service "kafka-cluster"
-  @region Application.compile_env(:ex_aws_msk_iam_auth, :region, "us-east-2")
+  @required_opts ~w(service region user_agent version ttl)a
   @method "GET"
-  @version "2020_10_22"
-  @user_agent "msk-elixir-client"
-  # 15 minutes
-  @ttl 900
 
   @doc """
   Builds AWS4 signed AWS_MSK_IAM payload needed for making SASL authentication request with broker
@@ -32,13 +26,13 @@ defmodule SignedPayloadGenerator do
       :aws_signature.sign_v4_query_params(
         aws_secret_key_id,
         aws_secret_access_key,
-        @region,
-        @service,
+        config(:region),
+        config(:service),
         # Formats to {{now.year, now.month, now.day}, {now.hour, now.minute, now.second}}
         now |> NaiveDateTime.to_erl(),
         @method,
         url,
-        ttl: @ttl
+        ttl: config(:ttl)
       )
 
     url_map = :aws_signature_utils.parse_url(aws_v4_signed_query)
@@ -51,10 +45,20 @@ defmodule SignedPayloadGenerator do
     # Building rest of the payload in the format from Java reference implementation
     signed_payload =
       signed_payload
-      |> Map.put("version", @version)
+      |> Map.put("version", config(:version))
       |> Map.put("host", url_map[:host])
-      |> Map.put("user-agent", @user_agent)
+      |> Map.put("user-agent", config(:user_agent))
 
     Jason.encode!(signed_payload)
+  end
+
+  defp config(key) do
+    config = Application.fetch_env!(:ex_aws_msk_iam_auth, key)
+
+    unless key in @required_opts and is_nil(config) do
+      raise "Missing required config value for the key: #{inspect(key)}"
+    end
+
+    config
   end
 end
